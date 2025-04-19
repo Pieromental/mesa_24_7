@@ -14,3 +14,4 @@
 
 require_once base_path('routes/api/Auth.php');
 require_once base_path('routes/api/Comensal.php');
+require_once base_path('routes/api/Mesa.php');
