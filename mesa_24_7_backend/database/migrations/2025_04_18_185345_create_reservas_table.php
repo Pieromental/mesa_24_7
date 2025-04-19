@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignUuid('comensal_id')->constrained('comensales')->onDelete('cascade');
             $table->foreignUuid('mesa_id')->constrained('mesas')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
