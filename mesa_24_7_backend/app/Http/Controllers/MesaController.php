@@ -41,7 +41,7 @@ class MesaController extends Controller
 
             $mesa = Mesa::create($data);
 
-            return Response::response(code: 201, title: 'Mesa registrada', message: 'Se creó correctamente la mesa', data: [$mesa->toArray()]);
+            return Response::response(code: 201, title: 'Mesa registrada', message: 'Se creó correctamente la mesa', data: $mesa->toArray());
         } catch (GeneralException $e) {
             return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
@@ -59,7 +59,7 @@ class MesaController extends Controller
                 code: 200,
                 title: 'Detalle de la mesa',
                 message: 'Datos obtenidos correctamente.',
-                data: [$mesa]
+                data: $mesa->toArray()
             );
         } catch (GeneralException $e) {
             return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
@@ -72,17 +72,17 @@ class MesaController extends Controller
     public function update(UpdateMesaRequest $request, string $id)
     {
         try {
-            $comensal = $this->findModelOrFail(Mesa::class, $id);
+            $mesa = $this->findModelOrFail(Mesa::class, $id);
 
             $data = $request->validated();
 
-            $comensal->update($data);
+            $mesa->update($data);
 
             return Response::response(
                 code: 200,
                 title: 'Mesa actualizada',
                 message: 'Datos actualizados correctamente',
-                data: $comensal->toArray()
+                data: $mesa->toArray()
             );
         } catch (GeneralException $e) {
             return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
@@ -95,9 +95,9 @@ class MesaController extends Controller
     public function destroy(string $id)
     {
         try {
-            $comensal = $this->findModelOrFail(Mesa::class, $id);
+            $mesa = $this->findModelOrFail(Mesa::class, $id);
 
-            $comensal->delete();
+            $mesa->delete();
 
             return Response::response(
                 code: 200,

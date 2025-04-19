@@ -42,7 +42,7 @@ class ComensalController extends Controller
 
             $comensal = Comensal::create($data);
 
-            return Response::response(code: 201, title: 'Comensal registrado', message: 'Se creó correctamente el comensal', data: [$comensal->toArray()]);
+            return Response::response(code: 201, title: 'Comensal registrado', message: 'Se creó correctamente el comensal', data: $comensal->toArray());
         } catch (GeneralException $e) {
             return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
@@ -61,7 +61,7 @@ class ComensalController extends Controller
                 code: 200,
                 title: 'Detalle del comensal',
                 message: 'Datos obtenidos correctamente.',
-                data: [$comensal]
+                data: $comensal->toArray()
             );
         } catch (GeneralException $e) {
             return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
