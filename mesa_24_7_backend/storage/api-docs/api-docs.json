@@ -1,0 +1,1553 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Mesa 24/7",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Iniciar sesión de usuario",
+                "description": "Permite al usuario autenticarse y obtener un token.",
+                "operationId": "c373bc4cffa4a56fc64e3979b8ee7b96",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "admin_mesa247l@dev.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bienvenido, Piero"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "usuario": {
+                                                    "type": "object"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "hsy27a87a...etc"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comensales": {
+            "get": {
+                "tags": [
+                    "Comensales"
+                ],
+                "summary": "Listar comensales",
+                "operationId": "8a753f8b047dabec0bbe8438bb3c6f25",
+                "parameters": [
+                    {
+                        "name": "nombre",
+                        "in": "query",
+                        "description": "Filtrar por el nombre del comensal",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "correo",
+                        "in": "query",
+                        "description": "Filtrar por el correo del comensal",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "telefono",
+                        "in": "query",
+                        "description": "Filtrar por el telefono del comensal",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "direccion",
+                        "in": "query",
+                        "description": "Filtrar por la direccion del comensal",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de comensales",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "nombre": {
+                                                "type": "string"
+                                            },
+                                            "correo": {
+                                                "type": "string"
+                                            },
+                                            "telefono": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "direccion": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Comensales"
+                ],
+                "summary": "Registrar un nuevo comensal",
+                "operationId": "222aa08e89a4c116e63898be3d00ad76",
+                "requestBody": {
+                    "description": "Datos del comensal a registrar",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "correo"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Fabricio Salazar"
+                                    },
+                                    "correo": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "fabricio@email.com"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "987654321",
+                                        "nullable": true
+                                    },
+                                    "direccion": {
+                                        "type": "string",
+                                        "example": "Av. Perú 123",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Comensal registrado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Comensal registrado"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se creó correctamente el comensal"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "nombre": {
+                                                    "type": "string"
+                                                },
+                                                "correo": {
+                                                    "type": "string"
+                                                },
+                                                "telefono": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "direccion": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/comensales/{id}": {
+            "get": {
+                "tags": [
+                    "Comensales"
+                ],
+                "summary": "Obtener detalle de un comensal",
+                "operationId": "c11cb69983675b0507844e5662d634d4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del comensal (UUID)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "34a3f892-8fa1-4d8b-9094-71a7e94e9c2c"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comensal encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Detalle del comensal"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Datos obtenidos correctamente."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "nombre": {
+                                                    "type": "string"
+                                                },
+                                                "correo": {
+                                                    "type": "string"
+                                                },
+                                                "telefono": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "direccion": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontró el comensal"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Comensales"
+                ],
+                "summary": "Actualizar un comensal",
+                "operationId": "95d79713bf1242e8b5fb0d3db41c5503",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del comensal a actualizar (UUID)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "a01f8f16-5481-4c95-89be-59e58e44fa7f"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Datos actualizables del comensal",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Fabricio Salazar"
+                                    },
+                                    "correo": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "fabricio@email.com"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "987654321",
+                                        "nullable": true
+                                    },
+                                    "direccion": {
+                                        "type": "string",
+                                        "example": "Av. Lima 456",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Comensal actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Comensal actualizado"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Datos actualizados correctamente"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "nombre": {
+                                                    "type": "string"
+                                                },
+                                                "correo": {
+                                                    "type": "string"
+                                                },
+                                                "telefono": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "direccion": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Comensal no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error inesperado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Comensales"
+                ],
+                "summary": "Eliminar (soft delete) un comensal",
+                "operationId": "6fbdb6afa37e1f4858e89f712dd61c03",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del comensal a eliminar (UUID)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4d1dcd3-13c4-4cb2-a78d-efbba321812f"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comensal marcado como eliminado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Comensal eliminado"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El comensal ha sido marcado como eliminado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Comensal no encontrado"
+                    },
+                    "500": {
+                        "description": "Error inesperado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/mesas": {
+            "get": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Listar todas las mesas",
+                "operationId": "5bd7c941a94d9c293b50cbf1877cbf4d",
+                "parameters": [
+                    {
+                        "name": "numero_mesa",
+                        "in": "query",
+                        "description": "Filtrar por número de mesa",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "capacidad",
+                        "in": "query",
+                        "description": "Filtrar por capacidad exacta",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "ubicacion",
+                        "in": "query",
+                        "description": "Filtrar por ubicacin",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado de mesas exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Listado de Mesas"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "uuid-1234"
+                                                    },
+                                                    "numero_mesa": {
+                                                        "type": "string",
+                                                        "example": "M01"
+                                                    },
+                                                    "capacidad": {
+                                                        "type": "integer",
+                                                        "example": 4
+                                                    },
+                                                    "ubicacion": {
+                                                        "type": "string",
+                                                        "example": "Terraza"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Registrar una nueva mesa",
+                "operationId": "62c0d87b5bc78ec1f7a1037d6b02ef77",
+                "requestBody": {
+                    "description": "Datos para crear una mesa",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "numero_mesa",
+                                    "capacidad"
+                                ],
+                                "properties": {
+                                    "numero_mesa": {
+                                        "type": "string",
+                                        "example": "M01"
+                                    },
+                                    "capacidad": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "ubicacion": {
+                                        "type": "string",
+                                        "example": "Interior"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Mesa creada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Mesa registrada"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se creó correctamente la mesa"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "uuid-1234"
+                                                },
+                                                "numero_mesa": {
+                                                    "type": "string",
+                                                    "example": "M01"
+                                                },
+                                                "capacidad": {
+                                                    "type": "integer",
+                                                    "example": 4
+                                                },
+                                                "ubicacion": {
+                                                    "type": "string",
+                                                    "example": "Interior"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/mesas/{id}": {
+            "get": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Obtener el detalle de una mesa",
+                "operationId": "02b05b36728a9ea2833defb4768b2a72",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID único de la mesa (UUID)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "c26b63f5-39b2-41e8-a6cb-49ef4bfa8e84"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mesa encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Detalle de la mesa"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Datos obtenidos correctamente."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "numero_mesa": {
+                                                    "type": "string",
+                                                    "example": "M01"
+                                                },
+                                                "capacidad": {
+                                                    "type": "integer",
+                                                    "example": 4
+                                                },
+                                                "ubicacion": {
+                                                    "type": "string",
+                                                    "example": "Terraza"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Mesa no encontrada"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Actualizar los datos de una mesa",
+                "operationId": "adf111e887077ca68bf3afce700c12da",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la mesa a actualizar (UUID)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e7cf2d8f-1f9f-4bb0-a0ec-45e9f0dcf63c"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Datos actualizables de la mesa",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "numero_mesa": {
+                                        "type": "string",
+                                        "example": "M03"
+                                    },
+                                    "capacidad": {
+                                        "type": "integer",
+                                        "example": 6
+                                    },
+                                    "ubicacion": {
+                                        "type": "string",
+                                        "example": "Zona VIP"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mesa actualizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Mesa actualizada"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Datos actualizados correctamente"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "numero_mesa": {
+                                                    "type": "string",
+                                                    "example": "M03"
+                                                },
+                                                "capacidad": {
+                                                    "type": "integer",
+                                                    "example": 6
+                                                },
+                                                "ubicacion": {
+                                                    "type": "string",
+                                                    "example": "Zona VIP"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Mesa no encontrada"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Eliminar (soft delete) una mesa",
+                "operationId": "cadb3d36e98e3b891b90be2fd0e8287e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la mesa a eliminar (UUID)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "b7421ab0-7a5b-4ccf-8c2d-99398779e3c5"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mesa eliminada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Mesa eliminada"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La mesa ha sido marcada como eliminada."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Mesa no encontrada"
+                    },
+                    "500": {
+                        "description": "Error inesperado del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/reservas": {
+            "get": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Listar todas las reservas",
+                "operationId": "8536ca90a9f5ba3709643c0493395478",
+                "parameters": [
+                    {
+                        "name": "fecha",
+                        "in": "query",
+                        "description": "Filtrar por fecha de reserva (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-04-20"
+                        }
+                    },
+                    {
+                        "name": "comensal_id",
+                        "in": "query",
+                        "description": "Filtrar por ID del comensal",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "mesa_id",
+                        "in": "query",
+                        "description": "Filtrar por ID de la mesa",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado de reservas exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Listado de Reservas"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "format": "uuid"
+                                                    },
+                                                    "fecha": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2024-04-20"
+                                                    },
+                                                    "hora": {
+                                                        "type": "string",
+                                                        "format": "time",
+                                                        "example": "19:30"
+                                                    },
+                                                    "numero_de_personas": {
+                                                        "type": "integer",
+                                                        "example": 4
+                                                    },
+                                                    "comensal_id": {
+                                                        "type": "string",
+                                                        "format": "uuid"
+                                                    },
+                                                    "mesa_id": {
+                                                        "type": "string",
+                                                        "format": "uuid"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Registrar una nueva reserva",
+                "operationId": "3b0d25aeb18200cc0887c6cb9d929934",
+                "requestBody": {
+                    "description": "Datos para crear una reserva",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "fecha",
+                                    "hora",
+                                    "numero_de_personas",
+                                    "mesa_id",
+                                    "comensal_id"
+                                ],
+                                "properties": {
+                                    "fecha": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-04-20"
+                                    },
+                                    "hora": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "19:30"
+                                    },
+                                    "numero_de_personas": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "mesa_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "c26b63f5-39b2-41e8-a6cb-49ef4bfa8e84"
+                                    },
+                                    "comensal_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "7f3c9a4a-bcd7-4b1a-996f-87c9b2aaf876"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reserva creada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Reserva registrada"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se creó correctamente el comensal"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "fecha": {
+                                                    "type": "string",
+                                                    "format": "date"
+                                                },
+                                                "hora": {
+                                                    "type": "string",
+                                                    "format": "time"
+                                                },
+                                                "numero_de_personas": {
+                                                    "type": "integer"
+                                                },
+                                                "mesa_id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "comensal_id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/reservas/{id}": {
+            "get": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Obtener el detalle de una reserva",
+                "operationId": "12b2a5f422f7abede6bff94de0d990f6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la reserva (UUID)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "aa7c219b-bce5-44d7-89d7-b758028dd891"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reserva encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Detalle de la reserva"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Datos obtenidos correctamente."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "fecha": {
+                                                    "type": "string",
+                                                    "format": "date"
+                                                },
+                                                "hora": {
+                                                    "type": "string",
+                                                    "format": "time"
+                                                },
+                                                "numero_de_personas": {
+                                                    "type": "integer"
+                                                },
+                                                "mesa_id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "comensal_id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Reserva no encontrada"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Actualizar una reserva existente",
+                "operationId": "91fe86a4a06c23ace3ffc53de226b866",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la reserva a actualizar (UUID)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "c26b63f5-39b2-41e8-a6cb-49ef4bfa8e84"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Datos actualizables de la reserva",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "fecha": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-04-25"
+                                    },
+                                    "hora": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "18:30"
+                                    },
+                                    "numero_de_personas": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "mesa_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "b93d92de-d9e7-4aab-9b36-505d65c1a411"
+                                    },
+                                    "comensal_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "ea7e94dc-8b2c-4653-ae4f-6f61d8b1f840"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Reserva actualizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Reserva actualizada"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Datos actualizados correctamente"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "fecha": {
+                                                    "type": "string",
+                                                    "format": "date"
+                                                },
+                                                "hora": {
+                                                    "type": "string",
+                                                    "format": "time"
+                                                },
+                                                "numero_de_personas": {
+                                                    "type": "integer"
+                                                },
+                                                "mesa_id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "comensal_id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Reserva no encontrada"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Eliminar (soft delete) una reserva",
+                "operationId": "992ae788935b42ab455ff366e9887ab7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la reserva a eliminar (UUID)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d2a3f19e-43f9-4e89-b3e0-2a678f03d456"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reserva eliminada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Reserva eliminada"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La reserva ha sido marcada como eliminada."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Reserva no encontrada"
+                    },
+                    "500": {
+                        "description": "Error inesperado del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticación",
+            "description": "Operaciones relacionadas a la autenticación"
+        },
+        {
+            "name": "Comensales",
+            "description": "Operaciones relacionadas a comensales"
+        },
+        {
+            "name": "Mesas",
+            "description": "Operaciones relacionadas a mesas"
+        },
+        {
+            "name": "Reservas",
+            "description": "Operaciones relacionadas a reservas"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "in": "header",
+                "name": "Authorization",
+                "description": "Introduce el Token obtenido durante inicio de sesión."
+            }
+        }
+    },
+    "security": [
+        {
+            "sanctum": []
+        }
+    ]
+}
