@@ -2,8 +2,6 @@
 
 namespace App\Utils;
 
-use Illuminate\Http\JsonResponse;
-
 class Response
 {
     public static function response(
@@ -14,11 +12,11 @@ class Response
         array $meta = [],
         ?string $functionName = '',
         ?string $messageError = ''
-    ): JsonResponse {
+    ): array {
         $type = self::resolveType($code);
         $status = $type === 'success';
 
-        return response()->json([
+        return [
             'status' => $status,
             'type' => $type,
             'code' => $code,
@@ -28,12 +26,9 @@ class Response
             'functionName' => $functionName,
             'data' => $data,
             'meta' => $meta,
-        ], $code);
+        ];
     }
 
-    /**
-     * Determina el tipo de respuesta según el código HTTP
-     */
     protected static function resolveType(int $code): string
     {
         return match (true) {
