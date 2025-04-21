@@ -87,7 +87,7 @@ class MesaController extends Controller
 
             return Response::response(code: 200, title: 'Listado de Mesas', data: $data,);
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 
@@ -143,7 +143,7 @@ class MesaController extends Controller
 
             return Response::response(code: 201, title: 'Mesa registrada', message: 'Se creó correctamente la mesa', data: $mesa->toArray());
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 
@@ -199,7 +199,7 @@ class MesaController extends Controller
                 data: $mesa->toArray()
             );
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 
@@ -272,7 +272,7 @@ class MesaController extends Controller
                 data: $mesa->toArray()
             );
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 
@@ -321,7 +321,7 @@ class MesaController extends Controller
                 message: 'La mesa ha sido marcada como eliminada.'
             );
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 }
