@@ -22,7 +22,7 @@ export interface IHttpResourceOption {
   header?: Record<string, unknown>;
   params?: Record<string, unknown>;
   paramsRoute?: Array<unknown>;
-  data?: Record<string, unknown> | FormData;
+  data?: Record<string, any> | FormData;
   timeout?: number;
   auth?: Record<string, unknown>;
   responseType?: string;
@@ -37,7 +37,7 @@ export interface IHttpResponse {
   code?: number;
   responseAction?: string;
   status: boolean;
-  data: unknown[];
+  data: any;
   title?: string;
   message: string;
   otherMessage: string;
@@ -91,7 +91,7 @@ export function useFetchHttp() {
 
   const fetchHttpResource = async (
     options: IHttpResourceOption
-  ): Promise<unknown> => {
+  ): Promise<IHttpResponse> => {
     const url: string = generateUrl(
       options.baseUrl ?? import.meta.env.VITE_CLIENT_API_URL,
       options.path,
