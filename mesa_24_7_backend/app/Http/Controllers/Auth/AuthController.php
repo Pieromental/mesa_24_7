@@ -73,7 +73,7 @@ class AuthController extends Controller
                 ]
             );
         } catch (GeneralException $e) {
-            return Response::error(
+            return Response::response(
                 code: $e->getCode(),
                 message: $e->getMessage(),
                 functionName: __FUNCTION__

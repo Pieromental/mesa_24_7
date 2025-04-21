@@ -93,7 +93,7 @@ class ReservaController extends Controller
 
             return Response::response(code: 200, title: 'Listado de Reservas', data: $data,);
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 
@@ -156,7 +156,7 @@ class ReservaController extends Controller
 
             return Response::response(code: 201, title: 'Reserva registrada', message: 'Se creó correctamente el comensal', data: $reserva->toArray());
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 
@@ -215,7 +215,7 @@ class ReservaController extends Controller
                 data: $reserva->toArray()
             );
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 
@@ -294,7 +294,7 @@ class ReservaController extends Controller
                 data: $reserva->toArray()
             );
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 
@@ -344,7 +344,7 @@ class ReservaController extends Controller
                 message: 'La reserva ha sido marcada como eliminada.'
             );
         } catch (GeneralException $e) {
-            return Response::error(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
+            return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
     }
 }
