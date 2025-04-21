@@ -28,12 +28,7 @@ import LoginFormComponent from '../components/LoginFormComponent.vue';
   background-size: cover;
 }
 .login-background-color {
-  background: #d3201d;
-  background: linear-gradient(
-    21deg,
-    rgba(211, 32, 29, 1) 0%,
-    rgba(246, 103, 62, 1) 58%,
-    rgba(192, 114, 2, 1) 100%
-  );
+    background: #FFC95E;
+    background: linear-gradient(21deg,rgba(255, 201, 94, 1) 0%, rgba(251, 139, 10, 1) 27%, rgba(255, 52, 1, 1) 63%);
 }
 </style>
