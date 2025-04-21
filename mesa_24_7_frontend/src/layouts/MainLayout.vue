@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
+      <q-toolbar class="bg-yellow-9">
         <q-btn
           flat
           dense
@@ -10,26 +10,36 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
+        <q-avatar class="q-mx-sm" style="border-radius: 0%">
+          <img src="../assets/images/svg/mesa24.svg" />
+        </q-avatar>
+        <q-toolbar-title> Mesa 24/7 </q-toolbar-title>
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+        <q-btn-dropdown flat round stretch color="white" icon="account_circle">
+          <div class="row no-wrap q-pa-md">
+            <div class="column items-center" style="width: 150px">
+              <q-avatar size="72px">
+                <q-icon name="logout" color="grey" size="72px" />
+              </q-avatar>
 
-        <div>Quasar v{{ $q.version }}</div>
+              <div class="text-subtitle1 q-mt-xs q-mb-xs">{{ userName }}</div>
+              <q-btn
+                color="primary"
+                label="Cerrar Sesion"
+                push
+                size="sm"
+                @click="logOut"
+                v-close-popup
+              />
+            </div>
+          </div>
+        </q-btn-dropdown>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+        <q-item-label header> Menú </q-item-label>
 
         <EssentialLink
           v-for="link in linksList"
@@ -46,61 +56,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue';
-
+import { ref, onMounted } from 'vue';
+import EssentialLink, {
+  EssentialLinkProps,
+} from 'components/EssentialLink.vue';
+import { useCrypto } from 'app/composable/crypto/useCrypto';
+import { useRouter } from 'vue-router';
+import { useAlert } from 'app/composable/alert/useAlert';
+const { decryptAES } = useCrypto();
+const router = useRouter();
+const { confirmAlert } = useAlert();
 defineOptions({
-  name: 'MainLayout'
+  name: 'MainLayout',
 });
-
+const userName = ref('');
 const linksList: EssentialLinkProps[] = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
+    title: 'Comensales',
+    icon: 'groups',
+    link: 'https://quasar.dev',
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
+    title: 'Mesas',
+    icon: 'table_bar',
+    link: 'https://github.com/quasarframework',
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
+    title: 'Reservas',
+    icon: 'local_dining',
+    link: 'https://chat.quasar.dev',
   },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
 ];
 
 const leftDrawerOpen = ref(false);
 
-function toggleLeftDrawer () {
+function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+const checkSessionInformation = async (): Promise<void> => {
+  const tokenKey = import.meta.env.VITE_NAME_TOKEN;
+  const userKey = import.meta.env.VITE_NAME_USUARIO;
+
+  const encryptedToken = localStorage.getItem(tokenKey);
+
+  if (!encryptedToken) {
+    router.push({ path: '/login' });
+    return;
+  }
+
+  const encryptedUser = localStorage.getItem(userKey);
+  const decryptedUser = decryptAES(encryptedUser ?? '');
+
+  userName.value = decryptedUser ?? '';
+};
+
+const logOut = async () => {
+  const canContinue = await confirmAlert(
+    { type: 'warning' },
+    '¿Está seguro de cerrar sesión?',
+    'Pulse aceptar para continuar'
+  );
+  if (canContinue) {
+    localStorage.clear();
+    router.push({ path: '/login' });
+  }
+};
+onMounted(() => {
+  checkSessionInformation();
+});
 </script>
