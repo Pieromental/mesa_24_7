@@ -1,6 +1,6 @@
 # Mesa 24/7 (mesa-24-7-frontend)
 
-Frontend for Mesa 24/7
+Mesa 24/7 Frontend
 
 ## Install the dependencies
 ```bash
@@ -29,6 +29,7 @@ yarn format
 # or
 npm run format
 ```
+
 
 
 ### Build the app for production
