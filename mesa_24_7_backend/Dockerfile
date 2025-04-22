@@ -1,30 +1,39 @@
-FROM php:8.1-fpm
 
-# 🧩 Instala extensiones necesarias
+FROM php:8.1-apache
+
 RUN apt-get update && apt-get install -y \
-    build-essential \
+    unzip \
+    git \
     libpng-dev \
-    libjpeg-dev \
+    libzip-dev \
     libonig-dev \
     libxml2-dev \
-    zip unzip curl git \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo_mysql gd zip \
+    && a2enmod rewrite headers
 
-# 📂 Establece el directorio de trabajo
-WORKDIR /var/www
 
-# 🧠 Copia Composer desde la imagen oficial
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 📂 Copia todo el proyecto (incluyendo artisan)
-COPY . .
+WORKDIR /var/www/html
 
-# 🔐 Permisos
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 775 /var/www/storage
 
-# 📦 Ahora sí: Instala dependencias
-RUN composer install --optimize-autoloader --no-dev
+COPY . /var/www/html
 
-# 🚀 Comando de inicio
-CMD ["php-fpm"]
+
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+
+RUN composer install --optimize-autoloader
+
+
+EXPOSE 80
+
+
+

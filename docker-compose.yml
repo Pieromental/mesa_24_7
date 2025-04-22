@@ -1,36 +1,32 @@
 
 services:
+  frontend-prod:
+    build:
+      context: ./mesa_24_7_frontend
+      dockerfile: Dockerfile
+    container_name: vue_frontend_prod
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    networks:
+      - laravel
   app:
     build:
       context: ./mesa_24_7_backend
       dockerfile: Dockerfile
     container_name: mesa247_back
     restart: unless-stopped
-    expose:
-      - "9000"
-    volumes:
-      - ./mesa_24_7_backend:/var/www
+    working_dir: /var/www/html
+    ports:
+      - '8000:80'
     depends_on:
       - db
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
     command: >
-      sh -c "php artisan migrate:fresh --seed --force && php-fpm"
-    networks:
-      - laravel
-  server:
-    image: nginx:stable-alpine
-    container_name: mesa247_server
-    restart: unless-stopped
-    ports:
-      - "8000:80"
-    volumes:
-      - ./mesa_24_7_backend:/var/www
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
-   
+      sh -c "php artisan migrate:fresh --seed --force &&
+           apache2-foreground"
     networks:
       - laravel
   
