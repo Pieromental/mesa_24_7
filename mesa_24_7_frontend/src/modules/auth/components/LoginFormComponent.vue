@@ -44,6 +44,7 @@
         label="Iniciar Sesión"
         type="submit"
         class="full-width login-btn"
+        :disable="isLoadingButton"
       >
         <template v-slot:loading>
           <q-spinner-hourglass class="on-left" />
@@ -57,7 +58,7 @@
 /****************************************************************************/
 /*                             IMPORTS                                      */
 /****************************************************************************/
-import { ref, onMounted } from 'vue';
+import { ref, reactive,onMounted } from 'vue';
 import { rulesValidation } from 'app/composable/inputRules/useRules';
 import { endPoints } from '../api/AuthEndpoints';
 import { useFetchHttp } from 'app/composable/fetch/useFetch';
@@ -75,7 +76,7 @@ const { singleAlert } = useAlert();
 /****************************************************************************/
 /*                             DATA                                         */
 /****************************************************************************/
-const loginFields = ref({
+const loginFields = reactive({
   email: '',
   password: '',
 });
@@ -109,7 +110,7 @@ const login = async () => {
 
     if (isValidForm) {
       endPoints.login.data = {
-        ...loginFields.value,
+        ...loginFields,
       };
       isLoadingButton.value = true;
       const response = await fetchHttpResource(endPoints.login);
