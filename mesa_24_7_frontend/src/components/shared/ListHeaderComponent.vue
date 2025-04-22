@@ -1,5 +1,5 @@
 <template>
-  <div class="row justify-between">
+  <div class="row justify-between" >
     <div class="col-6 column q-gutter-xs ">
       <span class="text-h4 text-bold">{{ props.title }}</span>
       <span class="text-subtitle2 text-grey">{{ props.subtitle }}</span>

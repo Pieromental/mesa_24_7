@@ -4,9 +4,11 @@
       <ListHeaderComponent v-bind="headerProps" />
     </div>
     <q-separator spaced />
-    <div class="q-mt-md">
+    <div class="q-mt-md q-mb-md">
       <ListFilterComponent :filters="filters" @apply="filtrar" />
     </div>
+
+    <ListItemComponent :items="comensalCardList" />
   </div>
 </template>
 <script setup lang="ts">
@@ -16,9 +18,13 @@
 import { ListHeaderProps, DynamicFilter } from 'src/types/components/props';
 import ListHeaderComponent from 'src/components/shared/ListHeaderComponent.vue';
 import ListFilterComponent from 'src/components/shared/ListFilterComponent.vue';
+import ListItemComponent from 'src/components/shared/ListItemComponent.vue';
 import { rulesValidation } from 'app/composable/inputRules/useRules';
 import { endPoints } from '../api/comensalEndPoints';
 import { useFetchHttp } from 'app/composable/fetch/useFetch';
+import { mapComensalToCardItem } from '../helper/comensalMapper';
+import { GenericCardItem } from 'src/types/components/props';
+import { ref, onMounted } from 'vue';
 /****************************************************************************/
 /*                             COMPOSABLE                                    */
 /****************************************************************************/
@@ -48,6 +54,8 @@ const filters: DynamicFilter[] = [
   { key: 'telefono', label: 'Teléfono', type: 'text' },
   { key: 'direccion', label: 'Dirección', type: 'text' },
 ];
+
+const comensalCardList = ref<GenericCardItem[]>([]);
 /****************************************************************************/
 /*                             METHODS                                      */
 /****************************************************************************/
@@ -59,9 +67,16 @@ const filtrar = async (valores: Record<string, string>) => {
       ...valores,
     };
     const response = await fetchHttpResource(endPoints.getComensales);
+    if (response.status) {
+      comensalCardList.value = response.data.map(mapComensalToCardItem);
+      console.log(comensalCardList.value);
+    }
   } catch (error) {
     console.error(error);
   }
   console.log('Valores filtrados:', valores);
 };
+onMounted(async () => {
+  await filtrar({});
+});
 </script>

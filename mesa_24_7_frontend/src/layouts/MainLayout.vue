@@ -1,7 +1,7 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar class="bg-yellow-9">
+      <q-toolbar class="bg-yellow-9" style="height: 50px">
         <q-btn
           flat
           dense
@@ -37,7 +37,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" bordered :width="250">
       <q-list>
         <q-item-label header> Menú </q-item-label>
 

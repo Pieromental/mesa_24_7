@@ -18,5 +18,31 @@ export interface DynamicFilter {
   label: string;
   type: FilterType;
   options?: string[];
-  rules?: ((val: any) => true | string)[]
+  rules?: ((val: any) => true | string)[];
+}
+
+export interface CardItemDetail {
+  icon: string;
+  label: string;
+  value: string;
+}
+
+export interface GenericCardItem {
+  id?: string | number;
+  avatarVisible: boolean;
+  avatarUrl: string;
+  title: string;
+  subtitle: string;
+  details: CardItemDetail[];
+}
+
+export interface Comensal {
+  id: string;
+  nombre: string;
+  correo: string;
+  telefono: string;
+  direccion: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
 }
