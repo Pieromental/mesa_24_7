@@ -74,17 +74,17 @@ const linksList: EssentialLinkProps[] = [
   {
     title: 'Comensales',
     icon: 'groups',
-    link: 'https://quasar.dev',
+    link: '/comensal',
   },
   {
     title: 'Mesas',
     icon: 'table_bar',
-    link: 'https://github.com/quasarframework',
+    link: '/mesa',
   },
   {
     title: 'Reservas',
     icon: 'local_dining',
-    link: 'https://chat.quasar.dev',
+    link: '/reserva',
   },
 ];
 
