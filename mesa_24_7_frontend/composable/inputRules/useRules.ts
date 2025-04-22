@@ -28,6 +28,7 @@ export function rulesValidation() {
         ? 'Campo Requerido'
         : true,
     email: (value: any) => {
+      if (!value) return true; // Permitir vacío si no es required
       const pattern =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return pattern.test(value) || 'E-mail inválido.';
@@ -109,6 +110,7 @@ export function rulesValidation() {
       return pattern.test(value) || 'El campo debe ser alfanumérico';
     },
     alfabetico: (value: any) => {
+      if (!value) return true;
       const pattern = /^[A-Za-z\s]+$/;
       return pattern.test(value) || 'El campo debe ser alfabético sin tíldes';
     },
@@ -125,6 +127,7 @@ export function rulesValidation() {
       return pattern.test(value) || 'El campo debe ser alfabético';
     },
     numerico: (value: any) => {
+      if (!value) return true;
       const pattern = /^[0-9]+$/;
       return pattern.test(value) || 'El campo debe ser numérico';
     },
@@ -267,6 +270,7 @@ export function rulesValidation() {
       return pattern.test(value) || mensaje;
     },
     entero: (value: any) => {
+      if (!value) return true;
       const pattern = /^\d+$/;
       return pattern.test(value) || 'Debe ser un número entero.';
     },
@@ -286,6 +290,7 @@ export function rulesValidation() {
       else return 'El valor debe ser 1 (Si) o 0 (No)';
     },
     fecha: (value: any) => {
+      if (!value) return true;
       const pattern = /^[0-9-]+$/;
       return !pattern.test(value)
         ? 'El campo no acepta letras y el formato den fecha es yyyy-mm-dd'
