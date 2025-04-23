@@ -71,6 +71,7 @@ const comensalCardList = ref<GenericCardItem[]>([]);
 /*                             COMPUTED                                      */
 /****************************************************************************/
 const filtrosActivos = computed<Record<string, string>>(() => {
+  console.log('Saltamos X');
   const obj: Record<string, string> = {};
   filters.value.forEach((f) => {
     if (f.value) {
