@@ -5,7 +5,7 @@ Este proyecto consiste en una aplicación de reservas de restaurantes compuesta 
 - `mesa_24_7_backend`: Backend construido con Laravel 10
 - `mesa_24_7_frontend`: Frontend construido con Vue 3 + Quasar Framework
 
-Todo está orquestado mediante Docker y configurado para funcionar en entorno local con NGINX como servidor reverse proxy.
+Todo está orquestado mediante Docker y configurado para funcionar en entorno local con NGINX como servidor para frontend y apache para Backend.
 
 ---
 
