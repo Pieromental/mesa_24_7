@@ -7,7 +7,9 @@
         </q-avatar>
       </q-item-section>
       <q-item-section>
-        <q-item-label class="text-h6 truncate-text">{{ item.title }}</q-item-label>
+        <q-item-label class="text-h6 truncate-text">{{
+          item.title
+        }}</q-item-label>
         <q-item-label caption>{{ item.subtitle }}</q-item-label>
       </q-item-section>
     </q-item>
@@ -22,7 +24,9 @@
           </q-item-section>
           <q-item-section style="max-width: 100%">
             <div class="text-caption text-weight-bold">{{ info.label }}</div>
-            <div class="text-caption truncate-text" :title="info.value">{{ info.value }}</div>
+            <div class="text-caption truncate-text" :title="info.value">
+              {{ info.value }}
+            </div>
           </q-item-section>
         </q-item>
       </q-list>
@@ -44,13 +48,18 @@ const props = defineProps<{
   item: GenericCardItem;
 }>();
 
-function onDelete() {
-  console.log('Eliminar clicado', props.item.id);
-}
+const emit = defineEmits<{
+  (e: 'delete', id: string | number | undefined): void;
+  (e: 'edit', id: string | number | undefined): void;
+}>();
 
-function onEdit() {
-  console.log('Editar clicado', props.item.id);
-}
+const onDelete = () => {
+  emit('delete', props.item.id);
+};
+
+const onEdit = () => {
+  emit('edit', props.item.id);
+};
 </script>
 <style scoped>
 .truncate-text {

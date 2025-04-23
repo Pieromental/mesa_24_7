@@ -18,7 +18,9 @@ export interface DynamicFilter {
   label: string;
   type: FilterType;
   options?: string[];
+
   rules?: ((val: any) => true | string)[];
+  value: any;
 }
 
 export interface CardItemDetail {

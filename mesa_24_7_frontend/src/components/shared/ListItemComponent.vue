@@ -5,7 +5,7 @@
       v-for="item in props.items"
       :key="item.id"
     >
-      <CardItemComponent :item="item" />
+      <CardItemComponent :item="item"  @delete="onDelete" />
     </div>
   </div>
 </template>
@@ -22,4 +22,14 @@ import { GenericCardItem } from 'src/types/components/props';
 const props = defineProps<{
   items: GenericCardItem[];
 }>();
+/****************************************************************************/
+/*                             EMITS                                        */
+/****************************************************************************/
+const emit = defineEmits<{
+  (e: 'delete', id: string | number | undefined): void
+}>();
+
+function onDelete(id: string | number | undefined) {
+  emit('delete', id);
+}
 </script>

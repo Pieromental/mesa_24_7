@@ -5,10 +5,10 @@
     </div>
     <q-separator spaced />
     <div class="q-mt-md q-mb-md">
-      <ListFilterComponent :filters="filters" @apply="filtrar" />
+      <ListFilterComponent :filters="filters" @apply="filterListComensal" />
     </div>
 
-    <ListItemComponent :items="comensalCardList" />
+    <ListItemComponent :items="comensalCardList" @delete="deleteComensal" />
   </div>
 </template>
 <script setup lang="ts">
@@ -24,12 +24,16 @@ import { endPoints } from '../api/comensalEndPoints';
 import { useFetchHttp } from 'app/composable/fetch/useFetch';
 import { mapComensalToCardItem } from '../helper/comensalMapper';
 import { GenericCardItem } from 'src/types/components/props';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useLoading } from 'app/composable/loading/useLoading';
+import { useAlert } from 'app/composable/alert/useAlert';
 /****************************************************************************/
 /*                             COMPOSABLE                                    */
 /****************************************************************************/
 const { rules } = rulesValidation();
 const { fetchHttpResource } = useFetchHttp();
+const { showLoading, hideLoading } = useLoading();
+const { showAlertFromResponse, confirmAlert } = useAlert();
 /****************************************************************************/
 /*                             DATA                                         */
 /****************************************************************************/
@@ -48,35 +52,86 @@ const headerProps: ListHeaderProps = {
   ],
 };
 
-const filters: DynamicFilter[] = [
-  { key: 'nombre', label: 'Nombre', type: 'text' },
-  { key: 'correo', label: 'Correo', type: 'text', rules: [rules.email] },
-  { key: 'telefono', label: 'Teléfono', type: 'text' },
-  { key: 'direccion', label: 'Dirección', type: 'text' },
-];
+const filters = ref<DynamicFilter[]>([
+  { key: 'nombre', label: 'Nombre', type: 'text', value: null },
+  {
+    key: 'correo',
+    label: 'Correo',
+    type: 'text',
+    rules: [rules.email],
+    value: null,
+  },
+  { key: 'telefono', label: 'Teléfono', type: 'text', value: null },
+  { key: 'direccion', label: 'Dirección', type: 'text', value: null },
+]);
 
 const comensalCardList = ref<GenericCardItem[]>([]);
+
+/****************************************************************************/
+/*                             COMPUTED                                      */
+/****************************************************************************/
+const filtrosActivos = computed<Record<string, string>>(() => {
+  const obj: Record<string, string> = {};
+  filters.value.forEach((f) => {
+    if (f.value) {
+      obj[f.key] = f.value;
+    }
+  });
+  return obj;
+});
+
 /****************************************************************************/
 /*                             METHODS                                      */
 /****************************************************************************/
 
-const filtrar = async (valores: Record<string, string>) => {
+const filterListComensal = async () => {
   try {
     const resource = endPoints.getComensales;
     resource.params = {
-      ...valores,
+      ...filtrosActivos.value,
     };
     const response = await fetchHttpResource(endPoints.getComensales);
+
     if (response.status) {
       comensalCardList.value = response.data.map(mapComensalToCardItem);
-      console.log(comensalCardList.value);
+    } else {
+      await showAlertFromResponse(response);
     }
   } catch (error) {
     console.error(error);
   }
-  console.log('Valores filtrados:', valores);
 };
+const deleteComensal = async (id: string | number | undefined) => {
+  try {
+    const canContinue = await confirmAlert(
+      { type: 'warning' },
+      '¿Está seguro de eliminar el comensal?'
+    );
+    if (canContinue) {
+      showLoading();
+      const resource = endPoints.deleteComensales;
+      resource.paramsRoute = [id];
+      const response = await fetchHttpResource(resource);
+
+      if (response.status) {
+        filterListComensal();
+      } else {
+        await showAlertFromResponse(response);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    hideLoading();
+  }
+};
+
+/****************************************************************************/
+/*                             LYFECICLE                                      */
+/****************************************************************************/
 onMounted(async () => {
-  await filtrar({});
+  showLoading();
+  await filterListComensal();
+  hideLoading();
 });
 </script>

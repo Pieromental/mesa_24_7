@@ -83,7 +83,7 @@ export function useFetchHttp() {
   const generateUrl = (
     baseUrl: string,
     path: string,
-    paramsRoute: unknown[] = []
+    paramsRoute: any[] = []
   ): string => {
     const params = paramsRoute.length ? '/' + paramsRoute.join('/') : '';
     return `${baseUrl}${path}${params}`;
@@ -112,7 +112,7 @@ export function useFetchHttp() {
     const auth: Record<string, any> | null = options.auth ?? null;
 
     const responseType: string = 'json';
-    
+
     let body: IHttpResponse;
 
     try {
