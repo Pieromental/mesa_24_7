@@ -42,10 +42,12 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof ValidationException) {
+            $messages = collect($exception->errors())->flatten()->implode(', ');
             return response()->json([
                 "code" => 422,
                 "status" => false,
-                'message' => 'Error de validación',
+                "title"=>'Error de Validación',
+                'message' => $messages,
                 'data' => $exception->errors()
             ], 422);
         }
