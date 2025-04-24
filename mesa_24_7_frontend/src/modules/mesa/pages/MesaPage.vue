@@ -67,7 +67,7 @@ const headerProps: ListHeaderProps = {
       icon: 'add',
       method: () => {
         modalProps.value.actionType = 'save';
-        modalProps.value.modalTitle = 'Registro de Comensal';
+        modalProps.value.modalTitle = 'Registro de Mesa';
         genericFormRef.value?.changeModalState();
       },
     },
@@ -179,7 +179,7 @@ const openEditModal = async (id: string | number | undefined) => {
     if (response.status) {
       const comensal = response.data;
       modalProps.value.actionType = 'edit';
-      modalProps.value.modalTitle = 'Edición de Comensal';
+      modalProps.value.modalTitle = 'Edición de Mesa';
       modalProps.value.fields.forEach((field) => {
         field.value = comensal[field.key] ?? ' ';
       });
