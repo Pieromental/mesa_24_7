@@ -8,7 +8,16 @@
       <ListFilterComponent :filters="filters" @apply="filterMesa" />
     </div>
 
-    <ListItemComponent :items="mesaCardList"  @delete="deleteTable"/>
+    <ListItemComponent
+      :items="mesaCardList"
+      @delete="deleteTable"
+      @edit="openEditModal"
+    />
+    <GenericFormModal
+      ref="genericFormRef"
+      v-bind="modalProps"
+      @submit-data="handleSubmit"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -24,9 +33,11 @@ import { mesaEndpoints } from '../api/mesaEndpoints';
 import { useFetchHttp } from 'app/composable/fetch/useFetch';
 import { mapMesaToCardItem } from '../helpers/mesaMapper';
 import { GenericCardItem } from 'src/types/components/props';
-import { ref, onMounted ,computed} from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useAlert } from 'app/composable/alert/useAlert';
 import { useLoading } from 'app/composable/loading/useLoading';
+import { createBaseMesaStructure } from '../helpers/createMesaStructure';
+import GenericFormModal from 'src/components/shared/GenericFormModal.vue';
 /****************************************************************************/
 /*                             COMPOSABLE                                    */
 /****************************************************************************/
@@ -38,6 +49,14 @@ const { showLoading, hideLoading } = useLoading();
 /****************************************************************************/
 /*                             DATA                                         */
 /****************************************************************************/
+const filters = ref<DynamicInput[]>(createBaseMesaStructure(rules));
+const genericFormRef = ref();
+const modalProps = ref({
+  fields: createBaseMesaStructure(rules, true),
+  modalTitle: '',
+  actionType: '',
+});
+
 const headerProps: ListHeaderProps = {
   title: 'Mesas',
   subtitle: 'Controla la información de tus mesas',
@@ -47,29 +66,14 @@ const headerProps: ListHeaderProps = {
       color: 'primary',
       icon: 'add',
       method: () => {
-        console.log('Agregando mesa...');
+        modalProps.value.actionType = 'save';
+        modalProps.value.modalTitle = 'Registro de Comensal';
+        genericFormRef.value?.changeModalState();
       },
     },
   ],
 };
 
-const filters = ref<DynamicInput[]>([
-  {
-    key: 'numero_mesa',
-    label: 'Número de Mesa',
-    type: 'text',
-    rules: [rules.alfanumerico],
-    value: null,
-  },
-  {
-    key: 'capacidad',
-    label: 'Capacidad',
-    type: 'text',
-    rules: [rules.entero],
-    value: null,
-  },
-  { key: 'ubicacion', label: 'Ubicación', type: 'text', value: null },
-]);
 const mesaCardList = ref<GenericCardItem[]>([]);
 /****************************************************************************/
 /*                             COMPUTED                                      */
@@ -83,11 +87,110 @@ const activeFilters = computed<Record<string, string>>(() => {
   });
   return obj;
 });
-
+const modalData = computed<Record<string, string>>(() => {
+  const obj: Record<string, string> = {};
+  modalProps.value.fields.forEach((f) => {
+    if (f.value) {
+      obj[f.key] = f.value;
+    }
+  });
+  return obj;
+});
 /****************************************************************************/
 /*                             METHODS                                      */
 /****************************************************************************/
+const handleSubmit = async (type: string) => {
+  console.log(type);
+  switch (type) {
+    case 'save':
+      saveMesa();
+      break;
+    case 'edit':
+      editMesa();
+      break;
+    default:
+      console.log('Not a method inplemented');
+      break;
+  }
+};
+const saveMesa = async () => {
+  try {
+    const canContinue = await confirmAlert(
+      { type: 'warning' },
+      '¿Está seguro de registrar la mesa?'
+    );
+    if (canContinue) {
+      showLoading();
 
+      const resource = mesaEndpoints.saveMesa;
+      resource.data = {
+        ...modalData.value,
+      };
+      const response = await fetchHttpResource(resource);
+      genericFormRef.value?.resetFields();
+      if (response.status) {
+        filterMesa();
+      } else {
+        await showAlertFromResponse(response);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    hideLoading();
+  }
+};
+const editMesa = async () => {
+  try {
+    const canContinue = await confirmAlert(
+      { type: 'warning' },
+      '¿Está seguro de editar la mesa?'
+    );
+    if (canContinue) {
+      showLoading();
+
+      const resource = mesaEndpoints.editMesa;
+      resource.paramsRoute = [modalData.value.id];
+      resource.data = {
+        ...modalData.value,
+      };
+      const response = await fetchHttpResource(resource);
+      genericFormRef.value?.resetFields();
+      if (response.status) {
+        filterMesa();
+      } else {
+        await showAlertFromResponse(response);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    hideLoading();
+  }
+};
+const openEditModal = async (id: string | number | undefined) => {
+  try {
+    showLoading();
+
+    const resource = mesaEndpoints.getMesaById;
+    resource.paramsRoute = [id];
+    const response = await fetchHttpResource(resource);
+
+    if (response.status) {
+      const comensal = response.data;
+      modalProps.value.actionType = 'edit';
+      modalProps.value.modalTitle = 'Edición de Comensal';
+      modalProps.value.fields.forEach((field) => {
+        field.value = comensal[field.key] ?? ' ';
+      });
+      genericFormRef.value?.changeModalState();
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    hideLoading();
+  }
+};
 const filterMesa = async () => {
   try {
     const resource = mesaEndpoints.getMesas;
@@ -97,13 +200,12 @@ const filterMesa = async () => {
     const response = await fetchHttpResource(mesaEndpoints.getMesas);
     if (response.status) {
       mesaCardList.value = response.data.map(mapMesaToCardItem);
-    }else{
+    } else {
       await showAlertFromResponse(response);
     }
   } catch (error) {
     console.error(error);
   }
-
 };
 const deleteTable = async (id: string | number | undefined) => {
   try {

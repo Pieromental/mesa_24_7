@@ -3,7 +3,12 @@ import {
   type IHttpResourceOption,
 } from 'app/composable/fetch/useFetch';
 
-type KeyResource = 'getMesas' | 'deleteTable';
+type KeyResource =
+  | 'getMesas'
+  | 'deleteTable'
+  | 'saveMesa'
+  | 'editMesa'
+  | 'getMesaById';
 
 const mesaEndpoints: Record<KeyResource, IHttpResourceOption> = {
   getMesas: <IHttpResourceOption>{
@@ -13,6 +18,18 @@ const mesaEndpoints: Record<KeyResource, IHttpResourceOption> = {
   deleteTable: <IHttpResourceOption>{
     path: '/mesas',
     method: HttpMethods.Delete,
+  },
+  saveMesa: <IHttpResourceOption>{
+    path: '/mesas',
+    method: HttpMethods.Post,
+  },
+  editMesa: <IHttpResourceOption>{
+    path: '/mesas',
+    method: HttpMethods.Put,
+  },
+  getMesaById: <IHttpResourceOption>{
+    path: '/mesas',
+    method: HttpMethods.Get,
   },
 };
 
