@@ -35,7 +35,11 @@
     </div>
 
     <q-slide-transition>
-      <DynamicFormInputs v-show="mostrar"   :filters="props.filters" ref="dynamicInputsRef"   />
+      <DynamicFormInputs
+        v-show="mostrar"
+        :fields="props.filters"
+        ref="dynamicInputsRef"
+      />
     </q-slide-transition>
   </div>
 </template>
@@ -44,14 +48,14 @@
 /****************************************************************************/
 /*                             IMPORTS                                      */
 /****************************************************************************/
-import { ref, computed, watch } from 'vue';
-import { DynamicFilter } from 'src/types/components/props';
+import { ref, computed } from 'vue';
+import { DynamicInput } from 'src/types/components/props';
 import DynamicFormInputs from './DynamicFormInputs.vue';
 /****************************************************************************/
 /*                             PROPS                                         */
 /****************************************************************************/
 const props = defineProps<{
-  filters: DynamicFilter[];
+  filters: DynamicInput[];
 }>();
 /****************************************************************************/
 /*                             DATA                                         */
@@ -59,7 +63,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'apply'): void;
 }>();
-const formRef = ref<any>(null);
 const dynamicInputsRef = ref<any>(null);
 const mostrar = ref(false);
 

@@ -3,7 +3,12 @@ import {
   type IHttpResourceOption,
 } from 'app/composable/fetch/useFetch';
 
-type KeyResource = 'getComensales' | 'deleteComensales';
+type KeyResource =
+  | 'getComensales'
+  | 'deleteComensales'
+  | 'saveComensal'
+  | 'getComensaleById'
+  | 'editComensal';
 
 const endPoints: Record<KeyResource, IHttpResourceOption> = {
   getComensales: <IHttpResourceOption>{
@@ -13,6 +18,18 @@ const endPoints: Record<KeyResource, IHttpResourceOption> = {
   deleteComensales: <IHttpResourceOption>{
     path: '/comensales',
     method: HttpMethods.Delete,
+  },
+  saveComensal: <IHttpResourceOption>{
+    path: '/comensales',
+    method: HttpMethods.Post,
+  },
+  editComensal: <IHttpResourceOption>{
+    path: '/comensales',
+    method: HttpMethods.Put,
+  },
+  getComensaleById: <IHttpResourceOption>{
+    path: '/comensales',
+    method: HttpMethods.Get,
   },
 };
 

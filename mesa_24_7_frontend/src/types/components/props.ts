@@ -11,14 +11,13 @@ export interface HeaderAction {
   method: () => void;
 }
 
-type FilterType = 'text' | 'date' | 'time' | 'select';
+type FilterType = 'text' | 'date' | 'time' | 'select' | 'hidden';
 
-export interface DynamicFilter {
+export interface DynamicInput {
   key: string;
   label: string;
   type: FilterType;
   options?: string[];
-
   rules?: ((val: any) => true | string)[];
   value: any;
 }

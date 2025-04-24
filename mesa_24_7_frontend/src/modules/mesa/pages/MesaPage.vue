@@ -15,7 +15,7 @@
 /****************************************************************************/
 /*                             IMPORTS                                      */
 /****************************************************************************/
-import { ListHeaderProps, DynamicFilter } from 'src/types/components/props';
+import { ListHeaderProps, DynamicInput } from 'src/types/components/props';
 import ListHeaderComponent from 'src/components/shared/ListHeaderComponent.vue';
 import ListFilterComponent from 'src/components/shared/ListFilterComponent.vue';
 import ListItemComponent from 'src/components/shared/ListItemComponent.vue';
@@ -53,7 +53,7 @@ const headerProps: ListHeaderProps = {
   ],
 };
 
-const filters = ref<DynamicFilter[]>([
+const filters = ref<DynamicInput[]>([
   {
     key: 'numero_mesa',
     label: 'Número de Mesa',
