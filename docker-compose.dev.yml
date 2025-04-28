@@ -1,35 +1,33 @@
-
 services:
   frontend-prod:
-    image: pieromental/mesa247-frontend:latest
-    ports:
-      - "8080:80"
-    networks:
-      - laravel
-    depends_on:
-      - db
-      - app
+    build:
+      context: ./mesa_24_7_frontend
+      dockerfile: Dockerfile
     container_name: vue_frontend_prod
     restart: unless-stopped
-
-  app:
-    image: pieromental/mesa247-backend:latest
     ports:
-      - "8000:80"
+      - '8080:80'
     networks:
       - laravel
+  app:
+    build:
+      context: ./mesa_24_7_backend
+      dockerfile: Dockerfile
+    container_name: mesa247_back
+    restart: unless-stopped
+    working_dir: /var/www/html
+    ports:
+      - '8000:80'
     depends_on:
       - db
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
-    container_name: mesa247_back
-    restart: unless-stopped
-  
     command: >
       sh -c "php artisan migrate:fresh --seed --force &&
            apache2-foreground"
- 
+    networks:
+      - laravel
   
   db:
     image: mysql:8.0
