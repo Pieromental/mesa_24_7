@@ -1,0 +1,77 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Git Semantic Version
+        uses: PaulHatch/semantic-version@v4.0.3
+        with:
+          major_pattern: "major:"
+          minor_pattern: "feat:"
+          format: "${major}.${minor}.${patch}-prerelease${increment}"
+        id: version
+        
+      - name: Docker Login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        run: |
+          echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
+      - name: Create .env for Frontend
+        run: |
+          echo "VITE_CLIENT_CRED_ENCRYPT_KEY=HdCQjbkyixu7y9_7wgMHJt6VVzM76izY" > mesa_24_7_frontend/.env
+          echo "VITE_NAME_TOKEN=dJ12ksx_wqh821kjs" >> mesa_24_7_frontend/.env
+          echo "VITE_NAME_USUARIO=HJ2Fk1xkqY6_y5vjs" >> mesa_24_7_frontend/.env
+          echo "VITE_CLIENT_API_URL=http://localhost:8000/api" >> mesa_24_7_frontend/.env
+      - name: Create .env for Backend
+        run: |
+          echo "APP_NAME=Laravel" > mesa_24_7_backend/.env
+          echo "APP_KEY=base64:MGy9MDFwuQsf6CAmz1a/FzRCf2rFq+S9MuM7S/KEe4A=" >> mesa_24_7_backend/.env
+          echo "APP_URL=http://localhost" >> mesa_24_7_backend/.env
+          echo "DB_CONNECTION=mysql" >> mesa_24_7_backend/.env
+          echo "DB_HOST=db" >> mesa_24_7_backend/.env
+          echo "DB_PORT=3306" >> mesa_24_7_backend/.env
+          echo "DB_DATABASE=mesa247" >> mesa_24_7_backend/.env
+          echo "DB_USERNAME=psalazar" >> mesa_24_7_backend/.env
+          echo "DB_PASSWORD=gottopassthistest" >> mesa_24_7_backend/.env
+
+      - name: Build Backend Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker build -t pieromental/mesa247-backend:$NEW_VERSION -f mesa_24_7_backend/Dockerfile ./mesa_24_7_backend
+          docker build -t pieromental/mesa247-backend:latest -f mesa_24_7_backend/Dockerfile ./mesa_24_7_backend
+
+      - name: Build Frontend Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker build -t pieromental/mesa247-frontend:$NEW_VERSION -f mesa_24_7_frontend/Dockerfile ./mesa_24_7_frontend
+          docker build -t pieromental/mesa247-frontend:latest -f mesa_24_7_frontend/Dockerfile ./mesa_24_7_frontend
+          
+      - name: Push Backend Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker push pieromental/mesa247-backend:$NEW_VERSION
+          docker push pieromental/mesa247-backend:latest
+
+      - name: Push Frontend Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker push pieromental/mesa247-frontend:$NEW_VERSION
+          docker push pieromental/mesa247-frontend:latest
