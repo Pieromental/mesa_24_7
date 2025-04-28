@@ -7,47 +7,54 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Git Semantic Version
+        uses: PaulHatch/semantic-version@v4.0.3
+        with:
+          major_pattern: "major:"
+          minor_pattern: "feat:"
+          format: "${major}.${minor}.${patch}-prerelease${increment}"
+        id: version
         
-    - name: Git Semantic Version
-      uses: PaulHatch/semantic-version@v4.0.3
-      with:
-        major_pattern: "major:"
-        minor_pattern: "feat:"
-        format: "${major}.${minor}.${patch}-prerelease${increment}"
-      id: version
-      
-    - name: Docker Login
-      env:
-        DOCKER_USER: ${{ secrets.DOCKER_USER }}
-        DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-        NEW_VERSION: ${{ steps.version.outputs.version }}
-      run: |
-        echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
+      - name: Docker Login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        run: |
+          echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
 
-    - name : Build Docker Image
-      env:
-        NEW_VERSION: ${{ steps.version.outputs.version }}
-      run: | 
-        docker build -t pieromental/mesa247:$NEW_VERSION .
-        docker build -t pieromental/mesa247:latest .
-        
-    - name : Push Docker Image
-      env:
-        NEW_VERSION: ${{ steps.version.outputs.version }}
-      run: | 
-        docker push pieromental/mesa247:$NEW_VERSION 
-        docker push pieromental/mesa247:latest 
+      - name: Build Backend Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker build -t pieromental/mesa247-backend:$NEW_VERSION -f mesa_24_7_backend/Dockerfile ./mesa_24_7_backend
+          docker build -t pieromental/mesa247-backend:latest -f mesa_24_7_backend/Dockerfile ./mesa_24_7_backend
 
+      - name: Build Frontend Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker build -t pieromental/mesa247-frontend:$NEW_VERSION -f mesa_24_7_frontend/Dockerfile ./mesa_24_7_frontend
+          docker build -t pieromental/mesa247-frontend:latest -f mesa_24_7_frontend/Dockerfile ./mesa_24_7_frontend
+          
+      - name: Push Backend Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker push pieromental/mesa247-backend:$NEW_VERSION
+          docker push pieromental/mesa247-backend:latest
 
-
-    
+      - name: Push Frontend Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker push pieromental/mesa247-frontend:$NEW_VERSION
+          docker push pieromental/mesa247-frontend:latest
