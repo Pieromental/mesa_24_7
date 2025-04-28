@@ -1,14 +1,12 @@
 import { GenericCardItem } from 'src/types/components/props';
 
 export function mapReservaToCardItem(reserva: any): GenericCardItem {
-  const avatarUrl = '';
-
   return {
     id: reserva.id,
     avatarVisible: false,
-    avatarUrl,
     title: `Reserva para ${reserva.numero_de_personas} personas`,
-    subtitle: `Mesa: ${reserva.mesa_id ?? 'No especificada'}`,
+
+    subtitle: `Mesa: ${reserva.mesa.numero_mesa ?? 'No especificada'}`,
     details: [
       {
         icon: 'event',
@@ -22,8 +20,8 @@ export function mapReservaToCardItem(reserva: any): GenericCardItem {
       },
       {
         icon: 'person',
-        label: 'Comensal ID',
-        value: reserva.comensal_id,
+        label: 'Comensal',
+        value: reserva.comensal.nombre,
       },
     ],
   };

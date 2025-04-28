@@ -85,11 +85,10 @@ class ReservaController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Reserva::query();
 
-            $filtered = DynamicQueryFilter::apply($request, $query);
+            $filtered = DynamicQueryFilter::apply($request, Reserva::class, ['comensal', 'mesa']);
 
-            $data =  $filtered->get()->toArray();
+            $data =  $filtered->toArray();
 
             return Response::response(code: 200, title: 'Listado de Reservas', data: $data,);
         } catch (GeneralException $e) {
@@ -154,7 +153,7 @@ class ReservaController extends Controller
 
             $reserva = Reserva::create($data);
 
-            return Response::response(code: 201, title: 'Reserva registrada', message: 'Se creó correctamente el comensal', data: $reserva->toArray());
+            return Response::response(code: 201, title: 'Reserva registrada', message: 'Se creó correctamente la reserva', data: $reserva->toArray());
         } catch (GeneralException $e) {
             return Response::response(code: $e->getCode(), message: $e->getMessage(), functionName: __FUNCTION__);
         }
@@ -206,8 +205,7 @@ class ReservaController extends Controller
     public function show(string $id)
     {
         try {
-            $reserva = $this->findModelOrFail(Reserva::class, $id);
-
+            $reserva = $this->findModelOrFail(Reserva::class, $id, ['comensal', 'mesa']);
             return Response::response(
                 code: 200,
                 title: 'Detalle de la reserva',

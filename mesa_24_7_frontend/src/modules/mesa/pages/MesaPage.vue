@@ -87,33 +87,24 @@ const activeFilters = computed<Record<string, string>>(() => {
   });
   return obj;
 });
-const modalData = computed<Record<string, string>>(() => {
-  const obj: Record<string, string> = {};
-  modalProps.value.fields.forEach((f) => {
-    if (f.value) {
-      obj[f.key] = f.value;
-    }
-  });
-  return obj;
-});
 /****************************************************************************/
 /*                             METHODS                                      */
 /****************************************************************************/
-const handleSubmit = async (type: string) => {
+const handleSubmit = async (type: string, formData: Record<string, any>) => {
   console.log(type);
   switch (type) {
     case 'save':
-      saveMesa();
+      saveMesa(formData);
       break;
     case 'edit':
-      editMesa();
+      editMesa(formData);
       break;
     default:
       console.log('Not a method inplemented');
       break;
   }
 };
-const saveMesa = async () => {
+const saveMesa = async (formData: Record<string, any>) => {
   try {
     const canContinue = await confirmAlert(
       { type: 'warning' },
@@ -124,7 +115,7 @@ const saveMesa = async () => {
 
       const resource = mesaEndpoints.saveMesa;
       resource.data = {
-        ...modalData.value,
+        ...formData,
       };
       const response = await fetchHttpResource(resource);
       genericFormRef.value?.resetFields();
@@ -140,7 +131,7 @@ const saveMesa = async () => {
     hideLoading();
   }
 };
-const editMesa = async () => {
+const editMesa = async (formData: Record<string, any>) => {
   try {
     const canContinue = await confirmAlert(
       { type: 'warning' },
@@ -150,9 +141,9 @@ const editMesa = async () => {
       showLoading();
 
       const resource = mesaEndpoints.editMesa;
-      resource.paramsRoute = [modalData.value.id];
+      resource.paramsRoute = [formData.id];
       resource.data = {
-        ...modalData.value,
+        ...formData,
       };
       const response = await fetchHttpResource(resource);
       genericFormRef.value?.resetFields();

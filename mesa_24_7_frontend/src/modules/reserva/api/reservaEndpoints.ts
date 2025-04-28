@@ -8,7 +8,10 @@ type KeyResource =
   | 'deleteReserva'
   | 'saveReserva'
   | 'editReserva'
-  | 'getReservaById';
+  | 'getReservaById'
+  | 'getComensaleById'
+  | 'getComensales'
+  | 'getMesas';
 
 const reservaEndpoints: Record<KeyResource, IHttpResourceOption> = {
   getReservas: <IHttpResourceOption>{
@@ -29,6 +32,18 @@ const reservaEndpoints: Record<KeyResource, IHttpResourceOption> = {
   },
   getReservaById: <IHttpResourceOption>{
     path: '/reservas',
+    method: HttpMethods.Get,
+  },
+  getComensaleById: <IHttpResourceOption>{
+    path: '/comensales',
+    method: HttpMethods.Get,
+  },
+  getComensales: <IHttpResourceOption>{
+    path: '/comensales',
+    method: HttpMethods.Get,
+  },
+  getMesas: <IHttpResourceOption>{
+    path: '/mesas',
     method: HttpMethods.Get,
   },
 };

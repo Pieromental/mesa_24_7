@@ -6,10 +6,13 @@ import reservaRoutes from 'src/modules/reserva/routes';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'home',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') },
+      {
+        path: '',
+        name: 'home',
+        component: () => import('pages/IndexPage.vue'),
+      },
       ...comensalRoutes,
       ...mesaRoutes,
       ...reservaRoutes,

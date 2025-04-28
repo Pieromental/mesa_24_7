@@ -55,7 +55,7 @@ const inputItemClass = 'cols-6 col-md-6 col-sm-12 col-xs-12 q-px-md q-pt-md';
 /*                             DATA                                         */
 /****************************************************************************/
 const emit = defineEmits<{
-  (e: 'submitData', actionType: string): void;
+  (e: 'submitData', actionType: string, data: Record<string, any>): void;
 }>();
 
 const isModalOpen = ref(false);
@@ -63,6 +63,15 @@ const dynamicInputsRef = ref<any>(null);
 /****************************************************************************/
 /*                             METHODS                                      */
 /****************************************************************************/
+const formatFieldsToObject = (): Record<string, any> => {
+  const obj: Record<string, any> = {};
+  props.fields.forEach((f) => {
+    if (f.value !== undefined) {
+      obj[f.key] = f.value;
+    }
+  });
+  return obj;
+};
 const resetFields = () => {
   props.fields.forEach((field) => {
     field.value = null;
@@ -70,12 +79,14 @@ const resetFields = () => {
 };
 const changeModalState = () => {
   isModalOpen.value = !isModalOpen.value;
+  if (!isModalOpen.value) resetFields();
 };
 const submitData = async () => {
   try {
     const isValidForm = await dynamicInputsRef.value.formRef.validate();
     if (isValidForm) {
-      emit('submitData', props.actionType);
+      const formData = formatFieldsToObject();
+      emit('submitData', props.actionType, formData);
       changeModalState();
     }
   } catch (error) {}

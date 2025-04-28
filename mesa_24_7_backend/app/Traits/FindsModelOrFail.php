@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use App\Exceptions\GeneralException;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Log;
 
 trait FindsModelOrFail
 {
@@ -17,9 +17,19 @@ trait FindsModelOrFail
      *
      * @throws \GeneralException
      */
-    protected function findModelOrFail(string $modelClass, mixed $id): Model
+    protected function findModelOrFail(string $modelClass, mixed $id, array $with = []): Model
     {
-        $model = $modelClass::find($id);
+        $query = $modelClass::query();
+
+        if (!empty($with)) {
+            try {
+                $query->with($with);
+            } catch (\Throwable $e) {
+                Log::warning("Falló carga de relación en {$modelClass}: {$e->getMessage()}");
+            }
+        }
+
+        $model = $query->find($id);
 
         if (!$model) {
             throw new GeneralException("No se encontró " . class_basename($modelClass), 404);

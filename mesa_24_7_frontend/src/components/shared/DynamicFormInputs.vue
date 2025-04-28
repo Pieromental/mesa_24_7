@@ -56,6 +56,7 @@
             v-else-if="filter.type === 'time'"
             filled
             dense
+            mask="##:##"
             readonly
             v-model="filter.value"
             :label="filter.label"
@@ -92,6 +93,8 @@
             :options="filter.options"
             filled
             dense
+            emit-value
+            map-options
             :rules="filter.rules"
           />
         </div>

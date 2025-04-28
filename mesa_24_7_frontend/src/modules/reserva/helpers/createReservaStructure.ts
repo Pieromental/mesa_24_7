@@ -22,7 +22,7 @@ export function createBaseReservaStructure(
     { key: 'hora', label: 'Hora', type: 'time', value: null },
     {
       key: 'numero_de_personas',
-      label: 'Comensales',
+      label: 'Cantidad Personas',
       type: 'text',
       rules: [...requiredRule, rules.entero],
       value: null,

@@ -17,7 +17,7 @@ export interface DynamicInput {
   key: string;
   label: string;
   type: FilterType;
-  options?: string[];
+  options?: any[];
   rules?: ((val: any) => true | string)[];
   value: any;
 }
@@ -31,7 +31,7 @@ export interface CardItemDetail {
 export interface GenericCardItem {
   id?: string | number;
   avatarVisible: boolean;
-  avatarUrl: string;
+  avatarUrl?: string;
   title: string;
   subtitle: string;
   details: CardItemDetail[];

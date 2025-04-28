@@ -37,6 +37,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useAlert } from 'app/composable/alert/useAlert';
 import { useLoading } from 'app/composable/loading/useLoading';
 import { createBaseReservaStructure } from '../helpers/createReservaStructure';
+import { createBaseReservaFieldsStructure } from '../helpers/createBaseReservaFieldsStructure';
 /****************************************************************************/
 /*                             COMPOSABLE                                    */
 /****************************************************************************/
@@ -55,9 +56,10 @@ const headerProps: ListHeaderProps = {
       text: 'Agregar',
       color: 'primary',
       icon: 'add',
-      method: () => {
+      method: async () => {
         modalProps.value.actionType = 'save';
         modalProps.value.modalTitle = 'Registro de Reserva';
+        await prepareModalProps();
         genericFormRef.value?.changeModalState();
       },
     },
@@ -66,7 +68,7 @@ const headerProps: ListHeaderProps = {
 
 const filters = ref<DynamicInput[]>(createBaseReservaStructure(rules));
 const modalProps = ref({
-  fields: createBaseReservaStructure(rules, true),
+  fields: createBaseReservaFieldsStructure(rules, true),
   modalTitle: '',
   actionType: '',
 });
@@ -84,26 +86,16 @@ const activeFilters = computed<Record<string, string>>(() => {
   });
   return obj;
 });
-const modalData = computed<Record<string, string>>(() => {
-  const obj: Record<string, string> = {};
-  modalProps.value.fields.forEach((f) => {
-    if (f.value) {
-      obj[f.key] = f.value;
-    }
-  });
-  return obj;
-});
 /****************************************************************************/
 /*                             METHODS                                      */
 /****************************************************************************/
-const handleSubmit = async (type: string) => {
-  console.log(type);
+const handleSubmit = async (type: string, formData: Record<string, any>) => {
   switch (type) {
     case 'save':
-      saveReserva();
+      saveReserva(formData);
       break;
     case 'edit':
-      editReserva();
+      editReserva(formData);
       break;
     default:
       console.log('Not a method inplemented');
@@ -119,12 +111,15 @@ const openEditModal = async (id: string | number | undefined) => {
     const response = await fetchHttpResource(resource);
 
     if (response.status) {
-      const comensal = response.data;
+      const reserva = response.data;
       modalProps.value.actionType = 'edit';
       modalProps.value.modalTitle = 'Edición de Reserva';
+      await prepareModalProps();
+      modalProps.value.actionType;
       modalProps.value.fields.forEach((field) => {
-        field.value = comensal[field.key] ?? ' ';
+        field.value = reserva[field.key] ?? ' ';
       });
+
       genericFormRef.value?.changeModalState();
     }
   } catch (error) {
@@ -133,7 +128,7 @@ const openEditModal = async (id: string | number | undefined) => {
     hideLoading();
   }
 };
-const saveReserva = async () => {
+const saveReserva = async (formData: Record<string, any>) => {
   try {
     const canContinue = await confirmAlert(
       { type: 'warning' },
@@ -144,10 +139,9 @@ const saveReserva = async () => {
 
       const resource = reservaEndpoints.saveReserva;
       resource.data = {
-        ...modalData.value,
+        ...formData,
       };
       const response = await fetchHttpResource(resource);
-      genericFormRef.value?.resetFields();
       if (response.status) {
         filterReservas();
       } else {
@@ -160,7 +154,7 @@ const saveReserva = async () => {
     hideLoading();
   }
 };
-const editReserva = async () => {
+const editReserva = async (formData: Record<string, any>) => {
   try {
     const canContinue = await confirmAlert(
       { type: 'warning' },
@@ -168,15 +162,14 @@ const editReserva = async () => {
     );
     if (canContinue) {
       showLoading();
-      console.log('Aqui');
 
       const resource = reservaEndpoints.editReserva;
-      resource.paramsRoute = [modalData.value.id];
+      resource.paramsRoute = [formData.id];
       resource.data = {
-        ...modalData.value,
+        ...formData,
       };
       const response = await fetchHttpResource(resource);
-      genericFormRef.value?.resetFields();
+
       if (response.status) {
         filterReservas();
       } else {
@@ -198,14 +191,12 @@ const filterReservas = async () => {
     const response = await fetchHttpResource(reservaEndpoints.getReservas);
     if (response.status) {
       reservaCardList.value = response.data.map(mapReservaToCardItem);
-      console.log(reservaCardList.value);
     } else {
       await showAlertFromResponse(response);
     }
   } catch (error) {
     console.error(error);
   }
-  console.log('Valores filtrados:', activeFilters.value);
 };
 const deleteReserva = async (id: string | number | undefined) => {
   try {
@@ -231,6 +222,59 @@ const deleteReserva = async (id: string | number | undefined) => {
     hideLoading();
   }
 };
+const getListComensal = async () => {
+  try {
+    const resource = reservaEndpoints.getComensales;
+    const response = await fetchHttpResource(resource);
+
+    if (response.status) {
+      return response.data.map((e: any) => ({
+        value: e.id,
+        label: e.nombre,
+      }));
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error('Error obteniendo lista de comensales:', error);
+    return [];
+  }
+};
+const getListMesa = async () => {
+  try {
+    const resource = reservaEndpoints.getMesas;
+    const response = await fetchHttpResource(resource);
+
+    if (response.status) {
+      return response.data.map((e: any) => ({
+        value: e.id,
+        label: e.numero_mesa,
+      }));
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error('Error obteniendo lista de comensales:', error);
+    return [];
+  }
+};
+const prepareModalProps = async () => {
+  const comensales = await getListComensal();
+  const mesas = await getListMesa();
+  const comensalField = modalProps.value.fields.find(
+    (f) => f.key === 'comensal_id'
+  );
+  if (comensalField) {
+    comensalField.options = comensales;
+  }
+  const mesaField = modalProps.value.fields.find((f) => f.key === 'mesa_id');
+  if (mesaField) {
+    mesaField.options = mesas;
+  }
+};
+/****************************************************************************/
+/*                             LYFECICLE                                     */
+/****************************************************************************/
 onMounted(async () => {
   showLoading();
   await filterReservas();

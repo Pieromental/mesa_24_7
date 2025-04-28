@@ -82,11 +82,10 @@ class ComensalController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Comensal::query();
 
-            $filtered = DynamicQueryFilter::apply($request, $query);
+            $filtered = DynamicQueryFilter::apply($request, Comensal::class);
 
-            $data =  $filtered->get()->toArray();
+            $data =  $filtered->toArray();
 
             return Response::response(code: 200, title: 'Listado de Comensales', data: $data,);
         } catch (GeneralException $e) {

@@ -52,4 +52,12 @@ class UpdateReservaRequest extends FormRequest
             'mesa_id.exists' => 'La mesa seleccionada no existe.',
         ];
     }
+    public function prepareForValidation()
+    {
+        if (isset($this->hora)) {
+            $this->merge([
+                'hora' => substr($this->hora, 0, 5),
+            ]);
+        }
+    }
 }

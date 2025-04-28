@@ -85,15 +85,7 @@ const activeFilters = computed<Record<string, string>>(() => {
   });
   return obj;
 });
-const modalData = computed<Record<string, string>>(() => {
-  const obj: Record<string, string> = {};
-  modalProps.value.fields.forEach((f) => {
-    if (f.value) {
-      obj[f.key] = f.value;
-    }
-  });
-  return obj;
-});
+
 /****************************************************************************/
 /*                             METHODS                                      */
 /****************************************************************************/
@@ -162,21 +154,21 @@ const deleteComensal = async (id: string | number | undefined) => {
     hideLoading();
   }
 };
-const handleSubmit = async (type: string) => {
+const handleSubmit = async (type: string, formData: Record<string, any>) => {
   console.log(type);
   switch (type) {
     case 'save':
-      saveComensal();
+      saveComensal(formData);
       break;
     case 'edit':
-      editComensal();
+      editComensal(formData);
       break;
     default:
       console.log('Not a method inplemented');
       break;
   }
 };
-const saveComensal = async () => {
+const saveComensal = async (formData: Record<string, any>) => {
   try {
     const canContinue = await confirmAlert(
       { type: 'warning' },
@@ -187,7 +179,7 @@ const saveComensal = async () => {
 
       const resource = endPoints.saveComensal;
       resource.data = {
-        ...modalData.value,
+        ...formData,
       };
       const response = await fetchHttpResource(resource);
       genericFormRef.value?.resetFields();
@@ -203,7 +195,7 @@ const saveComensal = async () => {
     hideLoading();
   }
 };
-const editComensal = async () => {
+const editComensal = async (formData: Record<string, any>) => {
   try {
     const canContinue = await confirmAlert(
       { type: 'warning' },
@@ -211,12 +203,11 @@ const editComensal = async () => {
     );
     if (canContinue) {
       showLoading();
-      console.log('Aqui');
 
       const resource = endPoints.editComensal;
-      resource.paramsRoute = [modalData.value.id];
+      resource.paramsRoute = [formData.id];
       resource.data = {
-        ...modalData.value,
+        ...formData,
       };
       const response = await fetchHttpResource(resource);
       genericFormRef.value?.resetFields();
@@ -232,6 +223,7 @@ const editComensal = async () => {
     hideLoading();
   }
 };
+
 /****************************************************************************/
 /*                             LYFECICLE                                      */
 /****************************************************************************/

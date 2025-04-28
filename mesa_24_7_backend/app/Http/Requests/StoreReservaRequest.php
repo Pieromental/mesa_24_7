@@ -28,9 +28,8 @@ class StoreReservaRequest extends FormRequest
             'comensal_id' => 'required|exists:comensales,id',
             'mesa_id' => 'required|exists:mesas,id',
         ];
-
     }
-    
+
     public function messages(): array
     {
         return [
@@ -51,5 +50,13 @@ class StoreReservaRequest extends FormRequest
             'mesa_id.required' => 'Debes seleccionar una mesa.',
             'mesa_id.exists' => 'La mesa seleccionada no existe.',
         ];
+    }
+    public function prepareForValidation()
+    {
+        if (isset($this->hora)) {
+            $this->merge([
+                'hora' => substr($this->hora, 0, 5),
+            ]);
+        }
     }
 }
